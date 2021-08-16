@@ -55,10 +55,13 @@
         },
         {
             name: 'Lockout',
-            type: 'line',
+            type: 'lineWithEnds',
             color: '#006CBA',
             colorDark: '#0094FF',
             lineWidth: 0.2,
+            endWidth: 0.1,
+            endRotation: 45,
+            endSideLength: 0.55,
             tooltip: [
                 'Numbers along a lockout line must not be between or equal to the numbers in the diamond ends.',
                 'These endpoints must differ by 4 or greater.',
@@ -94,6 +97,29 @@
                                 width: constraintInfo.lineWidth,
                                 isNewConstraint: true
                             });
+                        }
+                    }
+                    if (constraintInfo.type === 'lineWithEnd') {
+                        if (!puzzle.line || puzzle.rectangle) {
+                            puzzle.line = [];
+                            puzzle.rectangle = [];
+                        }
+                        for (let instance of puzzleEntry) {
+                            puzzle.line.push({
+                                lines: instance.lines,
+                                outlineC: constraintInfo.color,
+                                width: constraintInfo.lineWidth,
+                                isNewConstraint: true
+                            });
+                            puzzle.rectangle.push({
+                                rectangle: instance.ends,
+                                baseC: '#FFFFFF',
+                                outlineC: constraintInfo.color,
+                                fontC: '#000000',
+                                width: constraintInfo.endSideLength,
+                                height: constraintInfo.endSideLength,
+                                angle: constraintInfo.endRotation 
+                            })
                         }
                     }
                 }
@@ -218,11 +244,18 @@
                         if (index > -1) {
                             const outerCell0 = line[0]
                             const outerCell1 = line[line.length - 1]
-                            if (index > 0 && index < line.length - 1) {
-                                if ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value)) {
+                            if (outerCell0.value && outerCell1.value){
+                                if (index > 0 && index < line.length - 1) {
+                                    if ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value)) {
+                                        return false;
+                                    }
+                                    if ((lockoutDiff == 4 && n == 5) || (lockoutDiff == 3 && (n == 3 || n == 4)) || (lockoutDiff == 2 && (n == 2 || n == 3))){
+                                        return false;
+                                    }
+                                } else if (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff) {
                                     return false;
                                 }
-                            } else if (outerCell0.value && outerCell1.value && Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff) {
+                            } else if ( (outercell0.value && n == outerCell0.value) || (outercell0.value && n == outerCell1.value)) {
                                 return false;
                             }
                         }
@@ -252,10 +285,10 @@
             ctx.fill();
         }
         
-        const drawDiamond = function(end, color, colorDark, lineWidth, sideLength){
+        const drawDiamond = function(end, color, colorDark, lineWidth, sideLength, angle){
             ctx.beginPath();
             ctx.translate(end.x + cellSL / 2, end.y + cellSL * (0.5 - Math.sqrt(2)* sideLength/2));
-            ctx.rotate(45 * Math.PI / 180);
+            ctx.rotate(angle * Math.PI / 180);
             ctx.translate(-end.x- cellSL / 2, -end.y - cellSL * (0.5 - Math.sqrt(2)* sideLength/2));
             ctx.lineWidth = cellSL * lineWidth * 0.5;
             ctx.strokeStyle = boolSettings['Dark Mode'] ? colorDark : color;
@@ -311,16 +344,20 @@
                 [cell]
             ];
 
+            this.ends = [
+                [cell]
+            ];
+
             this.show = function() {
                 const lockoutInfo = newConstraintInfo.filter(c => c.name === 'Lockout')[0];
 
                 for (var a = 0; a < this.lines.length; a++) {
                     drawLine(this.lines[a], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.lineWidth);
                     ctx.save();
-                    drawDiamond(this.lines[a][0], lockoutInfo.color, lockoutInfo.colorDark, 0.1, 0.55);
+                    drawDiamond(this.lines[a][0], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.endWidth, lockoutInfo.endSideLength, lockoutInfo.endRotation);
                     ctx.restore();
                     ctx.save();
-                    drawDiamond(this.lines[a][this.lines[a].length-1], lockoutInfo.color, lockoutInfo.colorDark, 0.1, 0.55);
+                    drawDiamond(this.lines[a][this.lines[a].length-1], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.endWidth, lockoutInfo.endSideLength, lockoutInfo.endRotation);
                     ctx.restore();
                 }
 
@@ -328,6 +365,10 @@
 
             this.addCellToLine = function(cell) {
                 this.lines[this.lines.length - 1].push(cell);
+            }
+
+            this.addEnd = function(cell) {
+                this.ends[this.ends.length - 1].push(cell);
             }
         }
 
