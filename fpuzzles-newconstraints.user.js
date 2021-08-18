@@ -98,9 +98,11 @@
                             });
                         }
                     }
-                    if (constraintInfo.type === 'lineWithEnd') {
-                        if (!puzzle.line || puzzle.rectangle) {
+                    if (constraintInfo.type === 'lineWithEnds') {
+                        if (!puzzle.line) {
                             puzzle.line = [];
+                        }
+                        if (!puzzle.rectangle){
                             puzzle.rectangle = [];
                         }
                         for (let instance of puzzleEntry) {
@@ -117,7 +119,7 @@
                                 width: constraintInfo.endSideLength,
                                 height: constraintInfo.endSideLength,
                                 angle: constraintInfo.endRotation 
-                            })
+                            });
                         }
                     }
                 }
