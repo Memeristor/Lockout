@@ -95,6 +95,7 @@
                                 lines: instance.lines,
                                 outlineC: constraintInfo.color,
                                 width: constraintInfo.lineWidth,
+                                isNewConstraint: true,
                             });
                         }
                     }
@@ -110,15 +111,27 @@
                                 lines: instance.lines,
                                 outlineC: constraintInfo.color,
                                 width: constraintInfo.lineWidth,
+                                isNewConstraint: true,
                             });
                             puzzle.rectangle.push({
-                                rectangle: instance.ends,
+                                cells: instance.start[0],
                                 baseC: '#FFFFFF',
                                 outlineC: constraintInfo.color,
                                 fontC: '#000000',
                                 width: constraintInfo.endSideLength,
                                 height: constraintInfo.endSideLength,
-                                angle: constraintInfo.endRotation 
+                                angle: constraintInfo.endRotation,
+                                isNewConstraint: true,
+                            });
+                            puzzle.rectangle.push({
+                                cells: instance.end[0],
+                                baseC: '#FFFFFF',
+                                outlineC: constraintInfo.color,
+                                fontC: '#000000',
+                                width: constraintInfo.endSideLength,
+                                height: constraintInfo.endSideLength,
+                                angle: constraintInfo.endRotation,
+                                isNewConstraint: true,
                             });
                         }
                     }
@@ -135,6 +148,12 @@
                 puzzle.line = puzzle.line.filter(line => !line.isNewConstraint);
                 if (puzzle.line.length === 0) {
                     delete puzzle.line;
+                }
+            }
+            if (puzzle.rectangle) {
+                puzzle.rectangle = puzzle.rectangle.filter(rectangle => !rectangle.isNewConstraint);
+                if (puzzle.rectangle.length === 0) {
+                    delete puzzle.rectangle;
                 }
             }
 
@@ -284,7 +303,7 @@
             ctx.arc(line[line.length - 1].x + cellSL / 2, line[line.length - 1].y + cellSL / 2, ctx.lineWidth / 2, 0, Math.PI * 2);
             ctx.fill();
         }
-        
+
         const drawDiamond = function(end, color, colorDark, lineWidth, sideLength, angle){
             ctx.beginPath();
             ctx.translate(end.x + cellSL / 2, end.y + cellSL * (0.5 - Math.sqrt(2)* sideLength/2));
@@ -344,8 +363,12 @@
                 [cell]
             ];
 
-            this.ends = [
+            this.start = [
                 [cell]
+            ];
+
+            this.end = [
+                []
             ];
 
             this.show = function() {
@@ -358,18 +381,15 @@
                     ctx.restore();
                     ctx.save();
                     drawDiamond(this.lines[a][this.lines[a].length-1], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.endWidth, lockoutInfo.endSideLength, lockoutInfo.endRotation);
+                    this.end[a][0] = this.lines[a][this.lines[a].length-1]
                     ctx.restore();
                 }
-
             }
 
             this.addCellToLine = function(cell) {
                 this.lines[this.lines.length - 1].push(cell);
             }
 
-            this.addEnd = function(cell) {
-                this.ends[this.ends.length - 1].push(cell);
-            }
         }
 
         const origCategorizeTools = categorizeTools;
