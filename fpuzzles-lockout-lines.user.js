@@ -25,10 +25,13 @@
     // 4. Add a new constraint class (see 'Constraint classes' comment)
     const newConstraintInfo = [{
             name: 'Lockout',
-            type: 'line',
+            type: 'lineWithEnds',
             color: '#006CBA',
             colorDark: '#0094FF',
             lineWidth: 0.2,
+            width: 0.55,
+            height: 0.55,
+            angle: 45,
             tooltip: [
                 'Numbers along a lockout line must not be between or equal to the numbers in the diamond ends.',
                 'These endpoints must differ by 4 or greater.',
@@ -53,16 +56,39 @@
                 const id = cID(constraintInfo.name);
                 const puzzleEntry = puzzle[id];
                 if (puzzleEntry && puzzleEntry.length > 0) {
-                    if (constraintInfo.type === 'line') {
+                    if (constraintInfo.type === 'lineWithEnds') {
                         if (!puzzle.line) {
                             puzzle.line = [];
+                        }
+                        if (!puzzle.rectangle){
+                            puzzle.rectangle = [];
                         }
                         for (let instance of puzzleEntry) {
                             puzzle.line.push({
                                 lines: instance.lines,
                                 outlineC: constraintInfo.color,
                                 width: constraintInfo.lineWidth,
-                                isNewConstraint: true
+                                isLLConstraint: true
+                            });
+                            puzzle.rectangle.push({
+                                cells: [instance.cells[0]],
+                                baseC: '#FFFFFF',
+                                outlineC: constraintInfo.color,
+                                fontC: '#000000',
+                                width: constraintInfo.width,
+                                height: constraintInfo.height,
+                                angle: constraintInfo.angle,
+                                isLLConstraint: true
+                            });
+                            puzzle.rectangle.push({
+                                cells: [instance.cells[instance.cells.length-1]],
+                                baseC: '#FFFFFF',
+                                outlineC: constraintInfo.color,
+                                fontC: '#000000',
+                                width: constraintInfo.width,
+                                height: constraintInfo.height,
+                                angle: constraintInfo.angle,
+                                isLLConstraint: true
                             });
                         }
                     }
@@ -76,9 +102,15 @@
             // Remove any generated cosmetics
             const puzzle = JSON.parse(compressor.decompressFromBase64(string));
             if (puzzle.line) {
-                puzzle.line = puzzle.line.filter(line => !line.isNewConstraint);
+                puzzle.line = puzzle.line.filter(line => !line.isLLConstraint);
                 if (puzzle.line.length === 0) {
                     delete puzzle.line;
+                }
+            }
+            if (puzzle.rectangle) {
+                puzzle.rectangle = puzzle.rectangle.filter(rectangle => !rectangle.isLLConstraint);
+                if (puzzle.rectangle.length === 0) {
+                    delete puzzle.rectangle;
                 }
             }
 
@@ -138,7 +170,7 @@
                                 } else if (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff) {
                                     return false;
                                 }
-                            } else if ( (outercell0.value && n == outerCell0.value) || (outercell0.value && n == outerCell1.value)) {
+                            } else if ( (outerCell0.value && n == outerCell0.value) || (outerCell1.value && n == outerCell1.value)) {
                                 return false;
                             }
                         }
@@ -149,7 +181,7 @@
             return true;
         }
 
-        // Drawing helpers
+       // Drawing helpers
         const drawLine = function(line, color, colorDark, lineWidth) {
             ctx.lineWidth = cellSL * lineWidth * 0.5;
             ctx.fillStyle = boolSettings['Dark Mode'] ? colorDark : color;
@@ -168,19 +200,19 @@
             ctx.fill();
         }
 
-        const drawDiamond = function(end, color, colorDark, lineWidth, sideLength){
+        const drawDiamond = function(end, color, colorDark, width, angle){
             ctx.beginPath();
-            ctx.translate(end.x + cellSL / 2, end.y + cellSL * (0.5 - Math.sqrt(2)* sideLength/2));
-            ctx.rotate(45 * Math.PI / 180);
-            ctx.translate(-end.x- cellSL / 2, -end.y - cellSL * (0.5 - Math.sqrt(2)* sideLength/2));
-            ctx.lineWidth = cellSL * lineWidth * 0.5;
+            ctx.translate(end.x + cellSL / 2, end.y + cellSL * (0.5 - Math.sqrt(2)* width/2));
+            ctx.rotate(angle * Math.PI / 180);
+            ctx.translate(-end.x- cellSL / 2, -end.y - cellSL * (0.5 - Math.sqrt(2)* width/2));
+            ctx.lineWidth = cellSL * 0.1 * 0.5;
             ctx.strokeStyle = boolSettings['Dark Mode'] ? colorDark : color;
             ctx.fillStyle = boolSettings['Dark Mode'] ? '#000000' : '#FFFFFF';
-            ctx.fillRect(end.x+ cellSL / 2 , end.y + cellSL * (0.5 - Math.sqrt(2)* sideLength/2) , sideLength * cellSL, sideLength * cellSL);
-            ctx.strokeRect(end.x+ cellSL / 2 , end.y + cellSL * (0.5 - Math.sqrt(2)* sideLength/2) , sideLength * cellSL, sideLength * cellSL);
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.fillRect(end.x+ cellSL / 2 , end.y + cellSL * (0.5 - Math.sqrt(2)* width/2) , width * cellSL, width * cellSL);
+            ctx.strokeRect(end.x+ cellSL / 2 , end.y + cellSL * (0.5 - Math.sqrt(2)* width/2) , width * cellSL, width * cellSL);
+            ctx.resetTransform();
         }
-
+        
         // Constraint classes
 
         // Lockout
@@ -189,24 +221,29 @@
                 [cell]
             ];
 
+            this.cells = [
+                cell
+            ];
+
             this.show = function() {
                 const lockoutInfo = newConstraintInfo.filter(c => c.name === 'Lockout')[0];
 
                 for (var a = 0; a < this.lines.length; a++) {
                     drawLine(this.lines[a], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.lineWidth);
                     ctx.save();
-                    drawDiamond(this.lines[a][0], lockoutInfo.color, lockoutInfo.colorDark, 0.1, 0.55);
+                    drawDiamond(this.lines[a][0], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.width, lockoutInfo.angle);
                     ctx.restore();
                     ctx.save();
-                    drawDiamond(this.lines[a][this.lines[a].length-1], lockoutInfo.color, lockoutInfo.colorDark, 0.1, 0.55);
+                    drawDiamond(this.lines[a][this.lines[a].length-1], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.width, lockoutInfo.angle);
                     ctx.restore();
                 }
-
             }
 
             this.addCellToLine = function(cell) {
                 this.lines[this.lines.length - 1].push(cell);
+                this.cells.push(cell);
             }
+
         }
 
         const origCategorizeTools = categorizeTools;
@@ -215,7 +252,7 @@
 
             let toolLineIndex = toolConstraints.indexOf('Palindrome');
             for (let info of newConstraintInfo) {
-                if (info.type === 'line') {
+                if (info.type === 'lineWithEnds') {
                     toolConstraints.splice(++toolLineIndex, 0, info.name);
                     lineConstraints.push(info.name);
                 }
