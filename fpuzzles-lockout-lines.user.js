@@ -127,11 +127,18 @@
                         if (index > -1) {
                             const outerCell0 = line[0]
                             const outerCell1 = line[line.length - 1]
-                            if (index > 0 && index < line.length - 1) {
-                                if ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value)) {
+                            if (outerCell0.value && outerCell1.value){
+                                if (index > 0 && index < line.length - 1) {
+                                    if ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value)) {
+                                        return false;
+                                    }
+                                    if ((lockoutDiff == 4 && n == 5) || (lockoutDiff == 3 && (n == 3 || n == 4)) || (lockoutDiff == 2 && (n == 2 || n == 3))){
+                                        return false;
+                                    }
+                                } else if (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff) {
                                     return false;
                                 }
-                            } else if (outerCell0.value && outerCell1.value && Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff) {
+                            } else if ( (outercell0.value && n == outerCell0.value) || (outercell0.value && n == outerCell1.value)) {
                                 return false;
                             }
                         }
