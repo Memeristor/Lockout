@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fpuzzles-LockoutLines
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Adds LockoutLines constraint to f-puzzles.
 // @author       Memeristor
 // @match        https://*.f-puzzles.com/*
