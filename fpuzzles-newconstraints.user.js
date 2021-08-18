@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Fpuzzles-NewConstraints
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Adds more constraints to f-puzzles.
-// @author       Rangsk
+// @author       Rangsk & Memeristor
 // @match        https://*.f-puzzles.com/*
 // @match        https://f-puzzles.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
