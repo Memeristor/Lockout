@@ -95,7 +95,6 @@
                                 lines: instance.lines,
                                 outlineC: constraintInfo.color,
                                 width: constraintInfo.lineWidth,
-                                isNewConstraint: true
                             });
                         }
                     }
@@ -109,7 +108,6 @@
                                 lines: instance.lines,
                                 outlineC: constraintInfo.color,
                                 width: constraintInfo.lineWidth,
-                                isNewConstraint: true
                             });
                             puzzle.rectangle.push({
                                 rectangle: instance.ends,
