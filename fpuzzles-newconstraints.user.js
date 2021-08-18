@@ -376,7 +376,7 @@
 
             let toolLineIndex = toolConstraints.indexOf('Palindrome');
             for (let info of newConstraintInfo) {
-                if (info.type === 'line') {
+                if (info.type === 'line' || info.type === 'lineWithEnds') {
                     toolConstraints.splice(++toolLineIndex, 0, info.name);
                     lineConstraints.push(info.name);
                 }
