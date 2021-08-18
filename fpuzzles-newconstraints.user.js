@@ -263,20 +263,21 @@
                         if (index > -1) {
                             const outerCell0 = line[0]
                             const outerCell1 = line[line.length - 1]
-                            if (outerCell0.value && outerCell1.value){
-                                if (index > 0 && index < line.length - 1) {
-                                    if ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value)) {
-                                        return false;
-                                    }
-                                    if ((lockoutDiff == 4 && n == 5) || (lockoutDiff == 3 && (n == 3 || n == 4)) || (lockoutDiff == 2 && (n == 2 || n == 3))){
-                                        return false;
-                                    }
-                                } else if (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff) {
+                            const full = outerCell0.value && outerCell1.value
+                            if (index > 0 && index < line.length - 1) {
+                                if (full && ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value))) {
                                     return false;
                                 }
-                            } else if ( (outerCell0.value && n == outerCell0.value) || (outerCell1.value && n == outerCell1.value)) {
+                                if ((lockoutDiff === 4 && n === 5) || (lockoutDiff === 3 && (n === 3 || n === 4)) || (lockoutDiff === 2 && (n === 2 || n === 3))){
+                                    return false;
+                                }
+                                if ((outerCell0.value && n === outerCell0.value) || (outerCell1.value && n === outerCell1.value)) {
+                                    return false;
+                                }
+                            } else if (full && (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff)) {
                                 return false;
                             }
+                            
                         }
                     }
                 }
