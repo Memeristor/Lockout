@@ -56,8 +56,9 @@
         {
             name: 'Lockout',
             type: 'lineWithEnds',
-            color: '#006CBA',
+            color: '#0000FF',
             colorDark: '#0094FF',
+            colorRect: '#E7E6FF',
             lineWidth: 0.2,
             width: 0.55,
             height: 0.55,
@@ -115,7 +116,7 @@
                             });
                             puzzle.rectangle.push({
                                 cells: [instance.cells[0]],
-                                baseC: '#FFFFFF',
+                                baseC: constraintInfo.colorRect,
                                 outlineC: constraintInfo.color,
                                 fontC: '#000000',
                                 width: constraintInfo.width,
@@ -125,7 +126,7 @@
                             });
                             puzzle.rectangle.push({
                                 cells: [instance.cells[instance.cells.length-1]],
-                                baseC: '#FFFFFF',
+                                baseC: constraintInfo.colorRect,
                                 outlineC: constraintInfo.color,
                                 fontC: '#000000',
                                 width: constraintInfo.width,
@@ -305,14 +306,14 @@
             ctx.fill();
         }
 
-        const drawDiamond = function(end, color, colorDark, width, angle){
+        const drawDiamond = function(end, color, colorRect, colorDark, width, angle){
             ctx.beginPath();
             ctx.translate(end.x + cellSL / 2, end.y + cellSL * (0.5 - Math.sqrt(2)* width/2));
             ctx.rotate(angle * Math.PI / 180);
             ctx.translate(-end.x- cellSL / 2, -end.y - cellSL * (0.5 - Math.sqrt(2)* width/2));
             ctx.lineWidth = cellSL * 0.1 * 0.5;
             ctx.strokeStyle = boolSettings['Dark Mode'] ? colorDark : color;
-            ctx.fillStyle = boolSettings['Dark Mode'] ? '#000000' : '#FFFFFF';
+            ctx.fillStyle = boolSettings['Dark Mode'] ? '#000000' : colorRect;
             ctx.fillRect(end.x+ cellSL / 2 , end.y + cellSL * (0.5 - Math.sqrt(2)* width/2) , width * cellSL, width * cellSL);
             ctx.strokeRect(end.x+ cellSL / 2 , end.y + cellSL * (0.5 - Math.sqrt(2)* width/2) , width * cellSL, width * cellSL);
             ctx.resetTransform();
@@ -374,10 +375,10 @@
                 for (var a = 0; a < this.lines.length; a++) {
                     drawLine(this.lines[a], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.lineWidth);
                     ctx.save();
-                    drawDiamond(this.lines[a][0], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.width, lockoutInfo.angle);
+                    drawDiamond(this.lines[a][0], lockoutInfo.color, lockoutInfo.colorRect, lockoutInfo.colorDark, lockoutInfo.width, lockoutInfo.angle);
                     ctx.restore();
                     ctx.save();
-                    drawDiamond(this.lines[a][this.lines[a].length-1], lockoutInfo.color, lockoutInfo.colorDark, lockoutInfo.width, lockoutInfo.angle);
+                    drawDiamond(this.lines[a][this.lines[a].length-1], lockoutInfo.color, lockoutInfo.colorRect, lockoutInfo.colorDark, lockoutInfo.width, lockoutInfo.angle);
                     ctx.restore();
                 }
             }
