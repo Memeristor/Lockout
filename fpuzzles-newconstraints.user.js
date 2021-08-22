@@ -115,26 +115,28 @@
                                 width: constraintInfo.lineWidth,
                                 isNewConstraint: true
                             });
-                            puzzle.rectangle.push({
-                                cells: [instance.cells[0]],
-                                baseC: constraintInfo.baseC,
-                                outlineC: constraintInfo.outlineC,
-                                fontC: '#000000',
-                                width: constraintInfo.width,
-                                height: constraintInfo.height,
-                                angle: constraintInfo.angle,
-                                isNewConstraint: true
-                            });
-                            puzzle.rectangle.push({
-                                cells: [instance.cells[instance.cells.length-1]],
-                                baseC: constraintInfo.baseC,
-                                outlineC: constraintInfo.outlineC,
-                                fontC: '#000000',
-                                width: constraintInfo.width,
-                                height: constraintInfo.height,
-                                angle: constraintInfo.angle,
-                                isNewConstraint: true
-                            });
+                            for (let diamond of instance.lines){
+                                puzzle.rectangle.push({
+                                    cells: [diamond[0]],
+                                    baseC: constraintInfo.baseC,
+                                    outlineC: constraintInfo.outlineC,
+                                    fontC: '#000000',
+                                    width: constraintInfo.width,
+                                    height: constraintInfo.height,
+                                    angle: constraintInfo.angle,
+                                    isLLConstraint: true
+                                });
+                                puzzle.rectangle.push({
+                                    cells: [diamond[diamond.length - 1]],
+                                    baseC: constraintInfo.baseC,
+                                    outlineC: constraintInfo.outlineC,
+                                    fontC: '#000000',
+                                    width: constraintInfo.width,
+                                    height: constraintInfo.height,
+                                    angle: constraintInfo.angle,
+                                    isLLConstraint: true
+                                });
+                            }
                         }
                     }
                 }
@@ -366,10 +368,6 @@
                 [cell]
             ];
 
-            this.cells = [
-                cell
-            ];
-
             this.show = function() {
                 const lockoutInfo = newConstraintInfo.filter(c => c.name === 'Lockout')[0];
 
@@ -386,7 +384,6 @@
 
             this.addCellToLine = function(cell) {
                 this.lines[this.lines.length - 1].push(cell);
-                this.cells.push(cell);
             }
 
         }
