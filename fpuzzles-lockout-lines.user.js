@@ -72,26 +72,28 @@
                                 width: constraintInfo.lineWidth,
                                 isLLConstraint: true
                             });
-                            puzzle.rectangle.push({
-                                cells: [instance.cells[0]],
-                                baseC: constraintInfo.baseC,
-                                outlineC: constraintInfo.outlineC,
-                                fontC: '#000000',
-                                width: constraintInfo.width,
-                                height: constraintInfo.height,
-                                angle: constraintInfo.angle,
-                                isLLConstraint: true
-                            });
-                            puzzle.rectangle.push({
-                                cells: [instance.cells[instance.cells.length-1]],
-                                baseC: constraintInfo.baseC,
-                                outlineC: constraintInfo.outlineC,
-                                fontC: '#000000',
-                                width: constraintInfo.width,
-                                height: constraintInfo.height,
-                                angle: constraintInfo.angle,
-                                isLLConstraint: true
-                            });
+                            for (let diamond of instance.lines){
+                                puzzle.rectangle.push({
+                                    cells: [diamond[0]],
+                                    baseC: constraintInfo.baseC,
+                                    outlineC: constraintInfo.outlineC,
+                                    fontC: '#000000',
+                                    width: constraintInfo.width,
+                                    height: constraintInfo.height,
+                                    angle: constraintInfo.angle,
+                                    isLLConstraint: true
+                                });
+                                puzzle.rectangle.push({
+                                    cells: [diamond[diamond.length - 1]],
+                                    baseC: constraintInfo.baseC,
+                                    outlineC: constraintInfo.outlineC,
+                                    fontC: '#000000',
+                                    width: constraintInfo.width,
+                                    height: constraintInfo.height,
+                                    angle: constraintInfo.angle,
+                                    isLLConstraint: true
+                                });
+                            }
                         }
                     }
                 }
@@ -175,7 +177,7 @@
                             } else if (full && (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff)) {
                                 return false;
                             }
-                            
+
                         }
                     }
                 }
@@ -215,17 +217,13 @@
             ctx.strokeRect(end.x+ cellSL / 2 , end.y + cellSL * (0.5 - Math.sqrt(2)* width/2) , width * cellSL, width * cellSL);
             ctx.resetTransform();
         }
-        
+
         // Constraint classes
 
         // Lockout
         window.lockout = function(cell) {
             this.lines = [
                 [cell]
-            ];
-
-            this.cells = [
-                cell
             ];
 
             this.show = function() {
@@ -244,7 +242,6 @@
 
             this.addCellToLine = function(cell) {
                 this.lines[this.lines.length - 1].push(cell);
-                this.cells.push(cell);
             }
 
         }
