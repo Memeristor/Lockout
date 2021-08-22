@@ -124,7 +124,7 @@
                                     width: constraintInfo.width,
                                     height: constraintInfo.height,
                                     angle: constraintInfo.angle,
-                                    isLLConstraint: true
+                                    isNewConstraint: true
                                 });
                                 puzzle.rectangle.push({
                                     cells: [diamond[diamond.length - 1]],
@@ -134,7 +134,7 @@
                                     width: constraintInfo.width,
                                     height: constraintInfo.height,
                                     angle: constraintInfo.angle,
-                                    isLLConstraint: true
+                                    isNewConstraint: true
                                 });
                             }
                         }
