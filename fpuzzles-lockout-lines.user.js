@@ -164,6 +164,17 @@
                             const outerCell0 = line[0]
                             const outerCell1 = line[line.length - 1]
                             const full = outerCell0.value && outerCell1.value
+                            let maxLowValue = -1;
+                            let minHighValue = -1;
+                            for (let lineCell of line) {
+                                if (lineCell.value) {
+                                    if (lineCell.value === 1 || lineCell.value === 2 || lineCell.value === 3 || lineCell.value === 4) {
+                                        maxLowValue = maxLowValue === -1 || maxLowValue < lineCell.value ? lineCell.value : maxLowValue;
+                                    } else if (lineCell.value === 9 || lineCell.value === 8 || lineCell.value === 7 || lineCell.value === 6) {
+                                        minHighValue = minHighValue === -1 || minHighValue > lineCell.value ? lineCell.value : minHighValue;
+                                    }
+                                }
+                            }
                             if (index > 0 && index < line.length - 1) {
                                 if (full && ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value))) {
                                     return false;
@@ -176,6 +187,13 @@
                                 }
                             } else if (full && (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff)) {
                                 return false;
+                            } else {
+                                if (maxLowValue != -1 && n <= maxLowValue) {
+                                    return false;
+                                }
+                                if (minHighValue != -1 && n >= minHighValue) {
+                                    return false;
+                                }
                             }
 
                         }
