@@ -168,7 +168,7 @@
                                 if (full && ((n <= outerCell0.value && n >= outerCell1.value) || (n <= outerCell1.value && n >= outerCell0.value))) {
                                     return false;
                                 }
-                                if ((lockoutDiff === 4 && n === 5) || (lockoutDiff === 3 && (n === 3 || n === 4)) || (lockoutDiff === 2 && (n === 2 || n === 3))){
+                                if (n - lockoutDiff <= 1 && n + lockoutDiff >= size){
                                     return false;
                                 }
                                 if ((outerCell0.value && n === outerCell0.value) || (outerCell1.value && n === outerCell1.value)) {
