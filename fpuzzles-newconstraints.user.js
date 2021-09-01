@@ -270,8 +270,10 @@
                             const full = outerCell0.value && outerCell1.value
                             let maxLowValue = -1;
                             let minHighValue = -1;
+                            let cellIndex = -1;
                             for (let lineCell of line) {
-                                if (index > 0 && index < line.length - 1 && lineCell.value) {
+                                cellIndex++;
+                                if ((cellIndex > 0 && cellIndex < line.length - 1) && lineCell.value) {
                                     if (lineCell.value === 1 || lineCell.value === 2 || lineCell.value === 3 || lineCell.value === 4) {
                                         maxLowValue = maxLowValue === -1 || maxLowValue < lineCell.value ? lineCell.value : maxLowValue;
                                     } else if (lineCell.value === 9 || lineCell.value === 8 || lineCell.value === 7 || lineCell.value === 6) {
