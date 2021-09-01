@@ -194,6 +194,12 @@
                                 if (minHighValue != -1 && n >= minHighValue) {
                                     return false;
                                 }
+                                if (index === line.length - 1 && outerCell0.value && Math.abs(outerCell0.value - n) < lockoutDiff ) {
+                                    return false;
+                                } 
+                                if (index === 0 && outerCell1.value && Math.abs(outerCell1.value - n) < lockoutDiff ) {
+                                    return false;
+                                }
                             }
 
                         }
