@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fpuzzles-NewConstraints
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  Adds more constraints to f-puzzles.
 // @author       Rangsk & Memeristor
 // @match        https://*.f-puzzles.com/*
@@ -113,7 +113,7 @@
                                 lines: instance.lines,
                                 outlineC: constraintInfo.color,
                                 width: constraintInfo.lineWidth,
-                                isNewConstraint: true
+                                isLLConstraint: true
                             });
                             for (let diamond of instance.lines){
                                 puzzle.rectangle.push({
@@ -124,7 +124,7 @@
                                     width: constraintInfo.width,
                                     height: constraintInfo.height,
                                     angle: constraintInfo.angle,
-                                    isNewConstraint: true
+                                    isLLConstraint: true
                                 });
                                 puzzle.rectangle.push({
                                     cells: [diamond[diamond.length - 1]],
@@ -134,7 +134,7 @@
                                     width: constraintInfo.width,
                                     height: constraintInfo.height,
                                     angle: constraintInfo.angle,
-                                    isNewConstraint: true
+                                    isLLConstraint: true
                                 });
                             }
                         }
@@ -149,13 +149,13 @@
             // Remove any generated cosmetics
             const puzzle = JSON.parse(compressor.decompressFromBase64(string));
             if (puzzle.line) {
-                puzzle.line = puzzle.line.filter(line => !line.isNewConstraint);
+                puzzle.line = puzzle.line.filter(line => !(line.isNewConstraint || line.isLLConstraint) );
                 if (puzzle.line.length === 0) {
                     delete puzzle.line;
                 }
             }
             if (puzzle.rectangle) {
-                puzzle.rectangle = puzzle.rectangle.filter(rectangle => !rectangle.isNewConstraint);
+                puzzle.rectangle = puzzle.rectangle.filter(rectangle => !rectangle.isLLConstraint);
                 if (puzzle.rectangle.length === 0) {
                     delete puzzle.rectangle;
                 }
