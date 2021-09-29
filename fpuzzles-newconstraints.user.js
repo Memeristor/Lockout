@@ -274,9 +274,9 @@
                             for (let lineCell of line) {
                                 cellIndex++;
                                 if ((cellIndex > 0 && cellIndex < line.length - 1) && lineCell.value) {
-                                    if (lineCell.value < lockoutDiff) {
+                                    if (lineCell.value <= lockoutDiff) {
                                         maxLowValue = maxLowValue === -1 || maxLowValue < lineCell.value ? lineCell.value : maxLowValue;
-                                    } else if (lineCell.value > lockoutDiff) {
+                                    } else if (lineCell.value >= size - lockoutDiff + size%2) {
                                         minHighValue = minHighValue === -1 || minHighValue > lineCell.value ? lineCell.value : minHighValue;
                                     }
                                 }
