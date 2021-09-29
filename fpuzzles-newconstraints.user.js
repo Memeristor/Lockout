@@ -296,11 +296,13 @@
                                     return false;
                                 }
                             } else {
-                                if (maxLowValue != -1 && n <= maxLowValue) {
-                                    return false;
-                                }
-                                if (minHighValue != -1 && n >= minHighValue) {
-                                    return false;
+                                if (maxLowValue != minHighValue) {
+                                    if (maxLowValue != -1 && n <= maxLowValue) {
+                                        return false;
+                                    }
+                                    if (minHighValue != -1 && n >= minHighValue) {
+                                        return false;
+                                    }
                                 }
                                 if (index === line.length - 1 && outerCell0.value && Math.abs(outerCell0.value - n) < lockoutDiff ) {
                                     return false;
