@@ -291,8 +291,10 @@
                                 if ((outerCell0.value && n === outerCell0.value) || (outerCell1.value && n === outerCell1.value)) {
                                     return false;
                                 }
-                            } else if (full && (Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff)) {
-                                return false;
+                            } else if (full) {
+                                if ((Math.abs(outerCell0.value - outerCell1.value) < lockoutDiff)){
+                                    return false;
+                                }
                             } else {
                                 if (maxLowValue != -1 && n <= maxLowValue) {
                                     return false;
